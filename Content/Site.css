@@ -22,3 +22,7 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.background {
+    background: url("./images/defaultBackground.jpg") center/cover no-repeat;
+}
