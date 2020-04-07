@@ -24,5 +24,15 @@ textarea {
 }
 
 .background {
-    background: url("./images/defaultBackground.jpg") center/cover no-repeat;
+    background: url("./images/defaultBackground.jpg")  no-repeat;
+}
+
+.box {
+    margin: 0 auto;
+    width: 500px;
+    border: 1px solid black;
+    text-align: center;
+    color: black;
+    background-color: whitesmoke;
+    opacity: 0.8;
 }
