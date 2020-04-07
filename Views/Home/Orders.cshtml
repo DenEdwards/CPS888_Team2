@@ -1,0 +1,40 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+
+<link rel="stylesheet" type="text/css" href="/Content/food.css">
+
+<div class="jumbotron">
+    <h1>Orders</h1>
+    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
+    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+</div>
+
+<div class="title-big">
+    <img src="/Img/logo.png" style="width:100px" />
+    Bytes Before Bites
+</div>
+
+<div>
+    <div id="orderlist" style="border:0px solid red">
+        <table>
+            <tr>
+                <th><br />Orders<br /><hr /></th>
+            </tr>
+            @foreach (var db in Model)
+            {
+                <tr>
+                    <td>
+                        @db.FoodItemName<br />
+                        | Quantity: @db.Quantity<br />
+                        | Price: @db.TotalPrice <br />
+                        <hr />
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+<script src="~/dist/bundle.js"></script>
