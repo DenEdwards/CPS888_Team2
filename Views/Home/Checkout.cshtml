@@ -1,7 +1,47 @@
 ﻿@{
-    ViewBag.Title = "Checkout";
+    ViewBag.Title = "Configuration";
 }
-<h2>@ViewBag.Title.</h2>
-<h3>@ViewBag.Message</h3>
+<h1 style="background-color:red; text-align:center; color: white; padding-top: 15px; padding-bottom: 15px; font-weight: bold">@ViewBag.Title</h1>
+<fieldset>
+    <legend>Comment</legend>
+    @using (Ajax.BeginForm("Comment", "Home", new AjaxOptions { UpdateTargetId = "divInterestDeatils" }))
+    {
+        <div id="divInterestDeatils"></div>
+        <ol>
+            <li>
+                @Html.Label("Please Enter Your Name:")
+                @Html.TextBox("username")
+            </li>
+            <li>
+                @Html.Label("Please Enter Your Employee ID:")
+                @Html.TextBox("id")
+            </li>
+            <li>
+                @Html.Label("Please enter your customization(CU), Order you wish to cancel(CA), or the change you wish to make(CH):")
+                @Html.TextBox("instr")
+            </li>
+        </ol>
+        <button style="background-color: darkred;  text-align: center; margin-top: 14px; color: white">Submit</button>
+    }
+</fieldset>
 
-<p>Use this area to provide additional information.</p>
+
+<hr />
+
+<hr />
+<div style="text-align: center">
+    <a href='UserIndex#'> <button style=" background-color: darkred; color: white; margin-right: 50px" type="button">Back </button></a>
+</div>
+
+<div style="background-color: orange;  text-align: center; margin-top: 14px">
+    <span style="font-weight:bold;">Orders can only be Changed or Canceled until the midnight of previous day </span>
+</div>
+
+<div style="background-color: orange;  text-align: center; margin-top: 14px">
+    <span style="font-weight:bold;">Orders subject to ingredient availability</span>
+</div>
+<div style="background-color: orange;  text-align: center; margin-top: 14px">
+    <span style="font-weight:bold;">Confirmation email will be sent to orders placed successfully</span>
+</div>
+<hr />
+

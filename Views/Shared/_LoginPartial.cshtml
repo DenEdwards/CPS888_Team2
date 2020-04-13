@@ -23,6 +23,7 @@ else if ((Session["UserId"] != null) && (Session["CatererId"] == null))
 {
 
 <ul class="nav navbar-nav navbar-right">
+    <li>@Html.ActionLink("Menu", "UserIndex", "Home", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
     <li>@Html.ActionLink("Log Off", "LogOff", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
 </ul>
 

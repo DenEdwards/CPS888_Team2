@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Text;
 using System.Web.Mvc;
 
 namespace Cafeteria.Controllers
@@ -22,6 +22,43 @@ namespace Cafeteria.Controllers
             c.Database.CreateIfNotExists();
             return View();
         }
+        public ActionResult Checkout()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Comment(string username, string id, string instr)
+        {
+
+            ViewBag.Message = "Your Checkout Page.";
+            //to check if order successful
+            OrderDetail o =new OrderDetail();
+            string total = "Name: " + username + Environment.NewLine +"Id: "+ id + Environment.NewLine + "Special Instruction: "+instr;
+            bool dbSuccess = false;
+            try
+            {
+                using (var db = new AppDbContext())
+                {
+                        db.OrderDetails.AsEnumerable().Last().Comment = total;
+                        db.SaveChanges();
+
+                    //if all that worked then order worked:
+                    dbSuccess = true;
+                }
+
+            }
+            catch (Exception ex)
+            { //if theres error set it to false
+                dbSuccess = false;
+            }
+            if (dbSuccess)
+            {
+                return View("Checkout");
+            }
+            else return Json("success: false", JsonRequestBehavior.AllowGet);
+
+        }
 
         public ActionResult UserIndex()
         {   //creates the database using the declarations in the AppDbContext file. Comment them out when not in use
@@ -29,6 +66,8 @@ namespace Cafeteria.Controllers
             c.Database.CreateIfNotExists();
             return View();
         }
+
+
 
         // GET: returns items in Json format
         public IList<OrderDetail> orderList;// this holds the order items
@@ -50,7 +89,7 @@ namespace Cafeteria.Controllers
             return View(orderList); //to call this in browser: localhost:port/Data/GetMenuList
         }
 
-  
+
 
         public ActionResult About()
         {

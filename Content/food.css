@@ -44,6 +44,23 @@
 	border: 0px #ccc solid;
 	/*overflow-y: scroll;*/
 }
+#stuckButton{
+	position: fixed;
+}
+
+#out {
+	position:absolute ;
+	top: 35rem;
+	left: 10rem;
+	background-color: red;
+	opacity: 0.6;
+	height: 170px;
+	border: 1px solid #000;
+	width:300px;
+	color: white;
+	text-align: center;
+
+}
 
 	#dvmenu div {
 		width: 280px;
@@ -129,7 +146,7 @@
 .popup22zz {
 	position: absolute;
 	top: 200px;
-	left: 200px;
+	left: 100px;
 	background-color: #ccc;
 	padding: 10px;
 	z-index: 12; /** must be more that #overlay's z-index */
@@ -138,14 +155,13 @@
 @media (min-width: 401px){
 	.popup_inner {
 		position: absolute;
-		left: 25%;
-		right: 25%;
+		left: 30%;
 		top: 50px;
 		/*bottom: 25%;*/
 		padding: 10px;
 		background: white;
-		height: 455px;
-		width: 450px;
+		height: 600px;
+		width: 745px;
 		border: 2px solid #333;
 		border-radius: 5px 5px;
 	}

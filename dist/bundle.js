@@ -104,7 +104,7 @@ class MenuBox extends React.Component {
         this.state = { items: null, myOrder: null, showPopup: false, userId: 0, orderPlaced: false };
         this.getLoginStatus();
         this.loadMenusFromServer();
-        this.handleDataFromChild == this.handleDataFromChild.bind(this);
+        this.handleDataFromChild = this.handleDataFromChild.bind(this);
     }
     handleDataFromChild(popupShown, isOrderPlaced) {
         var tmp = this.state;
@@ -120,14 +120,27 @@ class MenuBox extends React.Component {
         this.setState(tmp);
         document.getElementById('dvcart').style.visibility = 'visible';
     }
+    toggleView() {
+        var elm = document.getElementById('cartContent');
+        if (elm.style.display == 'block') {
+            elm.style.display = 'none';
+            document.getElementById('btnToggle').innerText = '+';
+        }
+        else {
+            elm.style.display = 'block';
+            document.getElementById('btnToggle').innerText = '-';
+        }
+    }
     getLoginStatus() {
         var xhr = new XMLHttpRequest();
         xhr.open('get', '/data/GetUserId/', true);
         xhr.onload = function () {
             var userid = parseInt(xhr.responseText);
-            var tmp = this.state;
-            tmp.userId = userid;
-            this.setState(tmp);
+            if (!isNaN(userid)) {
+                var tmp = this.state;
+                tmp.userId = userid;
+                this.setState(tmp);
+            }
         }.bind(this);
         xhr.send();
     }
@@ -198,7 +211,7 @@ class MenuBox extends React.Component {
                     "$",
                     menu.Price,
                     " | ",
-                    React.createElement("a", { href: '#', onClick: this.addToCart.bind(this, menu.Id) }, "Add to Cart")),
+                    React.createElement("a", { href: '#', onClick: this.addToCart.bind(this, menu.Id) }, "Add to cart")),
                 React.createElement("hr", null)));
         }, this);
         var total = 0;
@@ -218,10 +231,10 @@ class MenuBox extends React.Component {
                 " ",
                 React.createElement("br", null),
                 "| ",
-                React.createElement("a", { href: '#', onClick: this.removeFromCart.bind(this, cartItemIndex++) }, "Remove Item"),
+                React.createElement("a", { href: '#', onClick: this.removeFromCart.bind(this, cartItemIndex++) }, "remove"),
                 React.createElement("hr", null)));
         }, this);
-        var totalAndContinueLink = React.createElement("div", { className: "grandTotal cartEmpty" }, "The Cart is Empty");
+        var totalAndContinueLink = React.createElement("div", { className: "grandTotal cartEmpty" }, "Cart Empty!");
         if (total > 0)
             totalAndContinueLink =
                 React.createElement("div", { className: "grandTotal cartNotEmpty" },
@@ -231,7 +244,7 @@ class MenuBox extends React.Component {
         var cart = document.getElementById("dvcart");
         var menu = document.getElementById("dvmenu");
         if (this.state.orderPlaced)
-            cart.innerHTML = '<div class="orderPlaced">Order Successfully Placed </div>';
+            cart.innerHTML = '<div class="orderPlaced">Order Placed successfully</div><a href="../../Home/Checkout#" ><button className="greenBtn a_left">Continue Order</button></a>';
         if (this.state.userId < 1) {
             myItems = null;
             if (cart != null)
@@ -248,11 +261,23 @@ class MenuBox extends React.Component {
         return (React.createElement("div", null,
             this.state.showPopup ?
                 React.createElement(Popup_1.Popup, { handlerFromParent: this.handleDataFromChild, myOrder: this.state.myOrder, userId: this.state.userId }) : null,
+            React.createElement("div", { id: "out" },
+                React.createElement("h3", null, "Out of Stock")),
             React.createElement("div", { id: "wrapper" },
-                React.createElement("div", { id: "dvmenu" }, menuList),
+                React.createElement("div", { id: "dvmenu" },
+                    React.createElement("h3", null, "Choose the items you wish to order, when you are finished press continue order."),
+                    React.createElement("h3", null, "To change an order press change order."),
+                    menuList),
                 React.createElement("div", { id: "dvcart" },
-                    React.createElement("div", { id: "cartContent" }, myItems),
-                    totalAndContinueLink))));
+                    React.createElement("div", { id: "work" },
+                        React.createElement("div", { className: 'myCart' },
+                            "My Cart ",
+                            React.createElement("button", { id: "btnToggle", className: "smartButton", onClick: this.toggleView.bind(this) }, "+")),
+                        React.createElement("div", { id: "cartContent" }, myItems),
+                        totalAndContinueLink),
+                    React.createElement("div", null,
+                        React.createElement("a", { href: "../../Home/Checkout#" },
+                            React.createElement("button", { className: "greenBtn a_left" }, "Change Order")))))));
     }
 }
 exports.MenuBox = MenuBox;
@@ -306,7 +331,7 @@ class Popup extends React.Component {
         return (React.createElement("div", { className: 'popup' },
             React.createElement("div", { className: 'popup_inner' },
                 React.createElement("div", { style: { height: '35px', fontSize: '18' } },
-                    React.createElement("b", null, "Bytes Before Bytes"),
+                    React.createElement("b", null, "Order from Bytes Before Bites"),
                     React.createElement("hr", null)),
                 React.createElement("div", { className: 'foodList' }, myItems),
                 React.createElement("div", { style: { height: '35px' } },

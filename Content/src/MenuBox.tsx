@@ -1,17 +1,18 @@
-﻿import * as React from "react";
+﻿// A '.tsx' file enables JSX support in the TypeScript compiler, 
+// for more information see the following page on the TypeScript wiki:
+// https://github.com/Microsoft/TypeScript/wiki/JSX
+import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { FoodModel, IAppState } from "./Models";
 import { Popup } from "./Popup";
 
 export class MenuBox extends React.Component<any, IAppState> {
-    state: { items: any; myOrder: any; showPopup: boolean; userId: number; orderPlaced: boolean; };
-    setState: any;
     constructor(state) {
         super(state);
-        this.state = { items: null, myOrder: null, showPopup: false, userId: 0, orderPlaced: false };
+        this.state = { items: null, myOrder: null, showPopup: false, userId: 0, orderPlaced: false};
         this.getLoginStatus();
         this.loadMenusFromServer();
-        this.handleDataFromChild == this.handleDataFromChild.bind(this);
+        this.handleDataFromChild = this.handleDataFromChild.bind(this);
     }
 
     handleDataFromChild(popupShown, isOrderPlaced) {
@@ -21,7 +22,7 @@ export class MenuBox extends React.Component<any, IAppState> {
             tmp.myOrder = null;
             tmp.orderPlaced = true;
             tmp.showPopup = false;
-        }
+            }
         else {
             tmp.orderPlaced = false;
             tmp.showPopup = false;
@@ -31,19 +32,33 @@ export class MenuBox extends React.Component<any, IAppState> {
 
     }
 
+    toggleView() {
+        var elm = document.getElementById('cartContent');
+        if (elm.style.display == 'block') {
+            elm.style.display = 'none';
+            document.getElementById('btnToggle').innerText = '+';
+        }
+        else {
+            elm.style.display = 'block';
+            document.getElementById('btnToggle').innerText = '-';
+        }
+    }
+
     getLoginStatus() {
         var xhr = new XMLHttpRequest();
         xhr.open('get', '/data/GetUserId/', true);
         xhr.onload = function () {
             var userid: number = parseInt(xhr.responseText);
-            var tmp: IAppState = this.state;
-            tmp.userId = userid;
-            this.setState(tmp);
+            if (!isNaN(userid)) {
+                var tmp: IAppState = this.state;
+                tmp.userId = userid;
+                this.setState(tmp);
+            }
 
         }.bind(this);
         xhr.send();
     }
-    //here's where we get the data from the server, you see the API endpoint /data/GetMenuList/
+
     loadMenusFromServer() {
         var xhr = new XMLHttpRequest();
         xhr.open('get', '/data/GetMenuList/', true);
@@ -78,7 +93,7 @@ export class MenuBox extends React.Component<any, IAppState> {
         tmp.myOrder = myCart;
         tmp.showPopup = false;
         this.setState(tmp);
-    } 
+    }
 
     removeFromCart(id) {
         if (this.state.userId < 1) {
@@ -100,8 +115,6 @@ export class MenuBox extends React.Component<any, IAppState> {
         this.setState(tmp);
         document.getElementById('dvcart').style.visibility = 'hidden';
     }
-
-
     render() {
         let menus = this.state.items || [];
         var menuList = menus.map(function (menu) {
@@ -109,17 +122,14 @@ export class MenuBox extends React.Component<any, IAppState> {
                 <div key={menu.Id}>
                     <b>{menu.Name} </b>    <br />
                     <img style={{ width: '100px', float: 'left', margin: '5px' }} src={"/img/" + menu.Picture} />{menu.Description}<p />
-                    <div>
-                        ${menu.Price} | <a href='#' onClick={this.addToCart.bind(this, menu.Id)}>Add to Cart</a>
-                    </div><hr />
+                    <div>${menu.Price} | <a href='#' onClick={this.addToCart.bind(this, menu.Id)} >Add to cart</a></div><hr />
                 </div>
-                )
+            )
         }, this);
 
         var total = 0;
         var cartItemIndex = 0;
         let myCart = this.state.myOrder || [];
-
         var myItems = myCart.map(function (menu) {
             total += menu.Price * menu.Quantity;
             return (
@@ -128,7 +138,7 @@ export class MenuBox extends React.Component<any, IAppState> {
                     {menu.Name}<br />
                     Qty: {menu.Quantity}<br />
                     Price: ${menu.Price * menu.Quantity} <br />
-                    | <a href='#' onClick={this.removeFromCart.bind(this, cartItemIndex++)}>Remove Item</a>
+                    | <a href='#' onClick={this.removeFromCart.bind(this, cartItemIndex++)} >remove</a>
                     <hr />
                 </div>
 
@@ -136,18 +146,17 @@ export class MenuBox extends React.Component<any, IAppState> {
 
         }, this);
 
-        var totalAndContinueLink = <div className="grandTotal cartEmpty">The Cart is Empty</div>;
+        var totalAndContinueLink = <div className="grandTotal cartEmpty">Cart Empty!</div>;
         if (total > 0)
             totalAndContinueLink =
                 <div className="grandTotal cartNotEmpty">Grand Total: ${total}
                     <button className="greenBtn continueOrder" onClick={this.continueOrder.bind(this)}>Continue Order</button>
                 </div>;
-
         var cart = document.getElementById("dvcart");
         var menu = document.getElementById("dvmenu");
 
         if (this.state.orderPlaced)
-            cart.innerHTML = '<div class="orderPlaced">Order Successfully Placed </div>';
+            cart.innerHTML = '<div class="orderPlaced">Order Placed successfully</div><a href="../../Home/Checkout#" ><button className="greenBtn a_left">Continue Order</button></a>';
 
         if (this.state.userId < 1) {
             myItems = null;
@@ -161,9 +170,7 @@ export class MenuBox extends React.Component<any, IAppState> {
                 cart.style.display = "block";
             if (menu != null)
                 menu.style.flex = "0 0 55%";
-        } 
-
-
+        }
         return (
             <div>
 
@@ -172,19 +179,36 @@ export class MenuBox extends React.Component<any, IAppState> {
                         handlerFromParent={this.handleDataFromChild}
                         myOrder={this.state.myOrder}
                         userId={this.state.userId} /> : null}
+                <div id="out"><h3>Out of Stock</h3></div>
 
                 <div id="wrapper">
                     <div id="dvmenu">
+                        <h3>Choose the items you wish to order, when you are finished press continue order.</h3>
+                        <h3>To change an order press change order.</h3>
                         {menuList}
                     </div>
+
                     <div id="dvcart">
+                        <div id="work">
+                        <div className='myCart'>
+                            My Cart <button id="btnToggle" className="smartButton"
+                                onClick={this.toggleView.bind(this)}>+</button>
+                        </div>
+
+
                         <div id="cartContent">
                             {myItems}
                         </div>
-                        {totalAndContinueLink}
+ 
+                            {totalAndContinueLink}
+                            </div>
+                        <div>
+                            <a href="../../Home/Checkout#" ><button className="greenBtn a_left">Change Order</button></a>
+                        </div>
                     </div>
+                    
                 </div>
-            </div>
-        );
+            </div>);
     }
+
 }
